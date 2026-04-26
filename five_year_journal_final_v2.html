@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Five Year Journal</title>
+<meta name="application-name" content="Five Year Journal">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Five Year Journal">
+<meta name="theme-color" content="#1a1108">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=IM+Fell+English:ital@0;1&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --paper:#f4ede0;--paper-dark:#e8ddd0;--paper-edge:#d9cfc2;
+  --ink:#1c1814;--ink-faint:#6b5f52;--ink-ghost:#b8ad9e;
+  --rule:#d0c4b4;--accent:#8b3a1e;--accent-warm:#c0622e;
+  --gold:#c9a84c;--gold-light:#e8c96a;
+  --cover-dark:#1a1108;--cover-mid:#2d1f0a;--spine:#0f0a04;
+  --sage:#5a7a5e;--slate:#4a6080;--terra:#8b3a1e;
+  --a5w:500px;--a5h:707px;
+}
+html,body{min-height:100vh;background:#0d0b08;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;font-family:'Cormorant Garamond',Georgia,serif;
+  overflow-x:hidden;padding:2rem 1rem 3rem}
+body::before{content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 40%,#2a1a08 0%,#0d0b08 70%);z-index:0}
+
+/* SCENE */
+.book-scene{position:relative;z-index:1;perspective:1800px}
+.book{width:var(--a5w);height:var(--a5h);position:relative;transform-style:preserve-3d;
+  transform:rotateX(2deg);filter:drop-shadow(0 40px 80px rgba(0,0,0,.9))}
+
+/* SPINE */
+.book-spine{position:absolute;left:-18px;top:4px;width:18px;height:calc(100% - 8px);
+  background:linear-gradient(90deg,var(--spine) 0%,#1e1208 60%,#2d1a08 100%);
+  transform:rotateY(-60deg) translateX(-2px);transform-origin:right center;border-radius:2px 0 0 2px}
+.book-spine::after{content:'FIVE YEAR JOURNAL  ·  2026–2030';position:absolute;
+  top:50%;left:50%;transform:translate(-50%,-50%) rotate(180deg);
+  writing-mode:vertical-rl;font-family:'DM Mono',monospace;font-size:.48rem;
+  letter-spacing:.28em;color:var(--gold);opacity:.65;white-space:nowrap}
+
+/* PAGE */
+.page{position:absolute;inset:0;border-radius:1px 3px 3px 1px;overflow:hidden}
+.page-inner{position:absolute;inset:0;background:var(--paper)}
+.page-inner::before{content:'';position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='.06'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:10}
+.page-inner::after{content:'';position:absolute;top:0;left:0;width:28px;height:100%;
+  background:linear-gradient(90deg,rgba(0,0,0,.09) 0%,transparent 100%);pointer-events:none;z-index:5}
+
+/* COVER */
+#cover{background:linear-gradient(160deg,var(--cover-mid) 0%,var(--cover-dark) 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer}
+#cover::before{content:'';position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='.12'/%3E%3C/svg%3E");pointer-events:none}
+#cover::after{content:'';position:absolute;inset:18px;border:1px solid rgba(201,168,76,.22);pointer-events:none}
+.cover-inner{position:relative;z-index:2;display:flex;flex-direction:column;
+  align-items:center;text-align:center;padding:2rem;gap:0}
+.cover-orn{color:var(--gold);font-size:1.3rem;letter-spacing:.5em;opacity:.65;
+  margin-bottom:2.2rem;font-family:'IM Fell English',serif}
+.cover-title{font-family:'IM Fell English',serif;font-size:2.7rem;font-weight:400;
+  color:var(--gold-light);line-height:1.15;letter-spacing:.04em;
+  text-shadow:0 2px 20px rgba(0,0,0,.8);margin-bottom:.35rem}
+.cover-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.95rem;
+  color:rgba(201,168,76,.5);letter-spacing:.14em;margin-bottom:3rem}
+.cover-rule{width:110px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  margin-bottom:3rem;opacity:.45}
+.cover-years{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.32em;
+  color:rgba(201,168,76,.38);margin-bottom:4.5rem}
+.cover-hint{font-family:'DM Mono',monospace;font-size:.56rem;letter-spacing:.22em;
+  color:rgba(201,168,76,.28);text-transform:uppercase;animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.28}50%{opacity:.7}}
+
+/* JOURNAL PAGE LAYOUT */
+#journal-page{display:none}
+#journal-page .page-inner{display:flex;flex-direction:column;padding:0}
+
+.pg-header{display:flex;align-items:baseline;justify-content:space-between;
+  padding:1.3rem 2rem .8rem 2.2rem;border-bottom:1px solid var(--rule);flex-shrink:0}
+.pg-header-date{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.16em;color:var(--ink-faint)}
+.pg-header-title{font-family:'DM Mono',monospace;font-size:.56rem;letter-spacing:.2em;color:var(--ink-ghost);text-transform:uppercase}
+
+.date-block{padding:1.4rem 2rem 0 2.2rem;display:flex;align-items:baseline;gap:.8rem;flex-shrink:0}
+.date-num{font-family:'IM Fell English',serif;font-size:4rem;line-height:1;color:var(--ink);letter-spacing:-.02em}
+.date-meta{display:flex;flex-direction:column;gap:.1rem}
+.date-mon{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.2em;color:var(--accent);text-transform:uppercase}
+.date-wday{font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:.1em;color:var(--ink-ghost)}
+.date-dnum{font-family:'DM Mono',monospace;font-size:.52rem;color:var(--ink-ghost);letter-spacing:.05em}
+
+.prompt-sec{padding:.9rem 2rem .7rem 2.2rem;border-bottom:1px solid var(--rule);flex-shrink:0}
+.ptag{display:inline-flex;align-items:center;gap:.35rem;margin-bottom:.45rem}
+.ptag-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.ptag-lbl{font-family:'DM Mono',monospace;font-size:.53rem;letter-spacing:.16em;text-transform:uppercase}
+.tI .ptag-dot{background:var(--terra)}.tI .ptag-lbl{color:var(--terra)}
+.tQ .ptag-dot{background:var(--sage)}.tQ .ptag-lbl{color:var(--sage)}
+.tC .ptag-dot{background:var(--slate)}.tC .ptag-lbl{color:var(--slate)}
+.tS .ptag-dot{background:var(--gold)}.tS .ptag-lbl{color:var(--accent-warm)}
+.prompt-txt{font-family:'IM Fell English',serif;font-style:italic;font-size:1.22rem;line-height:1.45;color:var(--ink);max-width:96%}
+
+/* ENTRIES */
+.entries{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--rule) transparent}
+.yr-row{display:grid;grid-template-columns:44px 1fr;min-height:66px;border-bottom:1px solid var(--rule)}
+.yr-row:last-child{border-bottom:none}
+.yr-row.yactive{background:rgba(139,58,30,.03)}
+.yr-label{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  padding-top:.8rem;border-right:1px solid var(--rule);gap:.28rem}
+.yr-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.ypast .yr-dot{background:var(--ink-ghost)}
+.yactive .yr-dot{background:var(--accent);box-shadow:0 0 0 3px rgba(139,58,30,.15)}
+.yfuture .yr-dot{background:var(--rule)}
+.yr-num{font-family:'DM Mono',monospace;font-size:.56rem;writing-mode:vertical-rl;transform:rotate(180deg)}
+.ypast .yr-num{color:var(--ink-ghost)}
+.yactive .yr-num{color:var(--accent)}
+.yfuture .yr-num{color:var(--rule)}
+.yr-content{padding:.7rem 1.5rem .7rem 1rem;display:flex;flex-direction:column;justify-content:center}
+.past-txt{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.9rem;line-height:1.55;color:var(--ink)}
+.no-entry{font-family:'DM Mono',monospace;font-size:.52rem;color:var(--rule);letter-spacing:.06em}
+.active-ta{width:100%;background:transparent;border:none;border-bottom:1px solid var(--accent-warm);
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.9rem;line-height:1.6;
+  color:var(--ink);resize:none;outline:none;padding:.1rem 0 .3rem;min-height:2rem;transition:border-color .2s}
+.active-ta::placeholder{color:var(--ink-ghost);font-style:italic}
+.active-ta:focus{border-bottom-color:var(--accent)}
+.future-line{height:1px;background:var(--paper-edge);margin-top:.55rem}
+
+/* FOOTER */
+.pg-footer{display:flex;align-items:center;justify-content:space-between;
+  padding:.6rem 1.8rem .7rem 2.2rem;border-top:1px solid var(--rule);flex-shrink:0;background:var(--paper);z-index:2}
+.nav-btn{background:none;border:none;cursor:pointer;font-family:'DM Mono',monospace;font-size:.56rem;
+  letter-spacing:.14em;color:var(--ink-faint);padding:.3rem .4rem;transition:color .15s;text-transform:uppercase}
+.nav-btn:hover{color:var(--accent)}
+.nav-btn:disabled{color:var(--rule);cursor:default}
+.save-btn{font-family:'DM Mono',monospace;font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--paper);background:var(--accent);border:none;padding:.42rem 1rem;cursor:pointer;
+  transition:background .18s,transform .1s;border-radius:1px}
+.save-btn:hover{background:var(--accent-warm)}
+.save-btn:active{transform:scale(.97)}
+.footer-mid{display:flex;flex-direction:column;align-items:center;gap:.22rem}
+.pg-num{font-family:'DM Mono',monospace;font-size:.52rem;color:var(--ink-ghost);letter-spacing:.1em}
+.save-st{font-family:'DM Mono',monospace;font-size:.5rem;color:var(--sage);letter-spacing:.07em;
+  opacity:0;transition:opacity .3s;height:.68rem}
+.save-st.show{opacity:1}
+
+/* ANIMATION */
+@keyframes tfwd{0%{opacity:1;transform:translateX(0)}40%{opacity:0;transform:translateX(12px)}
+  60%{opacity:0;transform:translateX(-8px)}100%{opacity:1;transform:translateX(0)}}
+@keyframes tbck{0%{opacity:1;transform:translateX(0)}40%{opacity:0;transform:translateX(-12px)}
+  60%{opacity:0;transform:translateX(8px)}100%{opacity:1;transform:translateX(0)}}
+.tfwd{animation:tfwd .32s ease both}
+.tbck{animation:tbck .32s ease both}
+
+/* CONTROLS */
+.ctrls{position:relative;z-index:1;margin-top:1.1rem;display:flex;align-items:center;gap:.8rem}
+.ctrl-btn{font-family:'DM Mono',monospace;font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(201,168,76,.42);background:none;border:1px solid rgba(201,168,76,.18);
+  padding:.38rem .9rem;cursor:pointer;transition:all .2s;border-radius:1px}
+.ctrl-btn:hover{color:var(--gold-light);border-color:rgba(201,168,76,.48)}
+.prog-wrap{width:var(--a5w);height:2px;background:rgba(255,255,255,.04);
+  margin-top:.55rem;position:relative;z-index:1;border-radius:1px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));
+  transition:width .3s ease;border-radius:1px}
+
+/* MODAL */
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);
+  z-index:100;align-items:center;justify-content:center}
+.modal-ov.open{display:flex}
+.month-modal{background:var(--paper);width:440px;max-height:80vh;border-radius:2px;
+  overflow:hidden;display:flex;flex-direction:column;box-shadow:0 40px 120px rgba(0,0,0,.9)}
+.modal-hdr{padding:1.1rem 1.4rem;border-bottom:1px solid var(--rule);display:flex;
+  align-items:center;justify-content:space-between;background:var(--paper-dark)}
+.modal-ttl{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--ink-faint)}
+.modal-cls{background:none;border:none;font-size:1rem;cursor:pointer;
+  color:var(--ink-faint);padding:.1rem .3rem;line-height:1}
+.month-grid{display:grid;grid-template-columns:repeat(4,1fr);overflow-y:auto;flex:1}
+.month-item{padding:.9rem .75rem;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);cursor:pointer;transition:background .12s}
+.month-item:hover{background:var(--paper-dark)}
+.month-item:nth-child(4n){border-right:none}
+.month-nm{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--accent);margin-bottom:.35rem}
+.month-days{display:flex;flex-wrap:wrap;gap:2px}
+.mday{width:14px;height:14px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-family:'DM Mono',monospace;font-size:.4rem;
+  color:var(--ink-ghost);cursor:pointer;transition:all .1s;border:1px solid transparent}
+.mday:hover{background:var(--paper-edge);color:var(--ink)}
+.mday.is-today{background:var(--accent);color:white}
+.mday.has-entry{color:var(--ink);border-color:var(--ink-ghost)}
+.mday.is-special{border-color:var(--gold);color:var(--accent-warm)}
+
+@media(max-width:560px){
+  :root{--a5w:95vw;--a5h:calc(95vw * 1.414)}
+  .book-spine{display:none}
+  .cover-title{font-size:2rem}
+  .date-num{font-size:3rem}
+  .prompt-txt{font-size:1rem}
+}
+</style>
+<script src="https://apis.google.com/js/api.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+<div class="book-scene">
+  <div class="book">
+    <div class="book-spine"></div>
+
+    <!-- COVER -->
+    <div class="page" id="cover" onclick="openJournal()">
+      <div class="cover-inner">
+        <div class="cover-orn">✦ ✦ ✦</div>
+        <div class="cover-title">Five Year<br>Journal</div>
+        <div class="cover-sub">Nancy Alice</div>
+        <div class="cover-rule"></div>
+        <div class="cover-years">2026 · 2027 · 2028 · 2029 · 2030</div>
+        <div class="cover-hint">Open to today →</div>
+      </div>
+    </div>
+
+    <!-- JOURNAL PAGE -->
+    <div class="page" id="journal-page">
+      <div class="page-inner">
+        <div class="pg-header">
+          <span class="pg-header-date" id="hdr-date">—</span>
+          <span class="pg-header-title">Five Year Journal</span>
+        </div>
+        <div class="date-block">
+          <div class="date-num" id="d-num">1</div>
+          <div class="date-meta">
+            <div class="date-mon" id="d-mon">Jan</div>
+            <div class="date-wday" id="d-wday">Monday</div>
+            <div class="date-dnum" id="d-dnum">Day 1 of 365</div>
+          </div>
+        </div>
+        <div class="prompt-sec" id="prompt-sec">
+          <div class="ptag" id="ptag"><div class="ptag-dot"></div><span class="ptag-lbl"></span></div>
+          <div class="prompt-txt" id="prompt-txt"></div>
+        </div>
+        <div class="entries" id="entries"></div>
+        <div class="pg-footer">
+          <button class="nav-btn" id="btn-prev" onclick="navigate(-1)">← prev</button>
+          <div class="footer-mid">
+            <div class="pg-num" id="pg-num">1 / 365</div>
+            <div class="save-st" id="save-st"></div>
+          </div>
+          <button class="save-btn" onclick="saveEntry()">Save</button>
+          <button class="nav-btn" id="btn-next" onclick="navigate(1)">next →</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="ctrls" id="ctrls" style="display:none">
+  <button class="ctrl-btn" onclick="goToday()">Today</button>
+  <button class="ctrl-btn" onclick="openModal()">Browse</button>
+  <button class="ctrl-btn" onclick="closeCover()">Cover</button>
+</div>
+<div class="prog-wrap" id="prog-wrap" style="display:none">
+  <div class="prog-fill" id="prog-fill"></div>
+</div>
+
+<div class="modal-ov" id="modal">
+  <div class="month-modal">
+    <div class="modal-hdr">
+      <span class="modal-ttl">Browse by month</span>
+      <button class="modal-cls" onclick="closeModal()">✕</button>
+    </div>
+    <div class="month-grid" id="month-grid"></div>
+  </div>
+</div>
+
+<script>
+const CAL = [["Jan 01","Not resolutions. Just: how do you want this year to feel from the inside?","I","special"],["Jan 02","Something you're carrying into this year that you didn't consciously choose to bring.","I","special"],["Jan 03","One small, specific thing you want more of this year.","Q","special"],["Jan 04","The version of your life that branched off at a decision you made three years ago.","C","general"],["Jan 05","A scene set in the most forgettable moment of the past week.","C","general"],["Jan 06","A small act of maintenance \u2014 of self, space, or relationship.","Q","general"],["Jan 07","The season in your body \u2014 what does this time of year do to you?","Q","general"],["Jan 08","A moment today when your body told you something your mind ignored.","Q","general"],["Jan 09","The thing on the list that keeps migrating to tomorrow.","Q","general"],["Jan 10","A two-sentence portrait of someone you saw today.","C","general"],["Jan 11","The rules of a game that describes your current work life.","C","general"],["Jan 12","Your life as described by someone who loves you but doesn't fully understand you.","C","general"],["Jan 13","Something has shifted in you this year. You haven't told anyone.","I","general"],["Jan 14","A person who no longer occupies your life. Where did they go?","I","general"],["Jan 15","A promise made or broken \u2014 to yourself or someone else.","Q","general"],["Jan 16","A decision you made quickly. One you've been making slowly for weeks.","Q","general"],["Jan 17","The best exchange you had today, even if it lasted thirty seconds.","Q","general"],["Jan 18","The physical habit that most reveals your emotional life.","I","general"],["Jan 19","Sit with the discomfort of something unresolved. Don't fix it. Just describe it.","I","general"],["Jan 20","A question someone asked you today that you didn't answer fully.","Q","general"],["Jan 21","Something that arrived unexpectedly today \u2014 information, feeling, person.","Q","general"],["Jan 22","The city today \u2014 what mood was it in?","Q","general"],["Jan 23","A word for the particular grief of a friendship that fades without ending.","C","general"],["Jan 24","The texture of this year \u2014 is it rough, smooth, porous, dense?","C","general"],["Jan 25","The floor plan of your current mental state.","C","general"],["Jan 26","Name the emotion of recognising your younger self in a stranger.","C","general"],["Jan 27","How much of today was chosen versus how much just happened to you?","Q","general"],["Jan 28","A face that passed yours today. Did you make eye contact?","Q","general"],["Jan 29","The person who frustrates you most teaches you something. What?","I","general"],["Jan 30","Where tension lives in your body right now, and what it's been asked to hold.","I","general"],["Jan 31","Trace the thread between where you are and where you thought you'd be.","I","general"],["Feb 01","The window view, if you have one. Or what you'd put there if you could.","Q","general"],["Feb 02","The last purchase. Was it wanted or needed?","Q","general"],["Feb 03","When you felt most focused today. What allowed it?","Q","general"],["Feb 04","An instruction manual for spending a day with you.","C","general"],["Feb 05","A classified ad for something you want to release from your life.","C","general"],["Feb 06","Invent a name for the feeling of a city just before a storm.","C","general"],["Feb 07","Honesty: are you happy?","I","general"],["Feb 08","A stranger's face you keep thinking about. Why that one?","Q","general"],["Feb 09","The temperature, the smell, the surface under your hands.","Q","general"],["Feb 10","Energy levels today, and the hour they turned.","Q","general"],["Feb 11","The expectation you inherited that no longer fits.","I","general"],["Feb 12","The last time your body surprised you \u2014 with capability or collapse.","I","general"],["Feb 13","The love you're practising giving. Is it coming naturally?","I","special"],["Feb 14","Someone you love in a way you haven't fully put into words yet.","I","special"],["Feb 15","The day after. What remains of yesterday?","Q","special"],["Feb 16","What your stubbornness is protecting.","I","general"],["Feb 17","If you could design a monument to something you've survived, what would it look like?","C","general"],["Feb 18","A field note from today, as if you were observing yourself from outside.","C","general"],["Feb 19","The version of today that exists in someone else's diary.","C","general"],["Feb 20","If someone painted your day, what would they choose to emphasise?","C","general"],["Feb 21","If your life were a piece of music right now, name the key it's in.","C","general"],["Feb 22","A choice you made this year that still echoes.","I","general"],["Feb 23","The last time you cried, or wanted to.","I","general"],["Feb 24","The object that moved most through your hands today.","Q","general"],["Feb 25","How you love people. Is it how you want to?","I","general"],["Feb 26","Name three things you've quietly given up on. Which one still pulls?","I","general"],["Feb 27","You are allowed to change your mind. What would you change first?","I","general"],["Feb 28","A year from now, what do you hope to have stopped doing?","I","general"],["Mar 01","Open with: 'By the time you read this \u2014'","C","general"],["Mar 02","The dedication page of a book you'll never write but should.","C","general"],["Mar 03","Something about Toronto you noticed that you've never noticed before.","Q","general"],["Mar 04","Sleep: when, how long, what quality, what residue.","Q","general"],["Mar 05","The hour you lost. The hour you found.","Q","general"],["Mar 06","Imagine the version of this city in fifty years. Is it recognisable?","C","general"],["Mar 07","The thing you're pretending is fine.","I","general"],["Mar 08","The gap between your values and your behaviour this week.","I","general"],["Mar 09","Locate where you are \u2014 not geographically.","I","general"],["Mar 10","Where you feel most like a stranger, and whether that's getting better.","I","general"],["Mar 11","The text you didn't reply to and why.","Q","general"],["Mar 12","A gesture of care you offered or received, however small.","Q","general"],["Mar 13","How the day opened, before anything was required of you.","Q","general"],["Mar 14","The item you kept meaning to put away and didn't.","Q","general"],["Mar 15","Something ordinary you passed today that contained something enormous.","C","general"],["Mar 16","There's a version of your life you haven't lived. Describe its outlines.","I","general"],["Mar 17","Your handwriting right now \u2014 what does it reveal?","Q","general"],["Mar 18","Two sounds you can hear. One you usually don't notice.","Q","general"],["Mar 19","The relationship that costs you the most energy \u2014 is it worth it?","I","general"],["Mar 20","You're better at something than you admit. Say it plainly.","I","general"],["Mar 21","If this year were a form of transportation, which one and why?","C","general"],["Mar 22","Write the stage directions for the most ordinary scene of your day.","C","general"],["Mar 23","A letter to an object that has outlasted its usefulness in your life.","C","general"],["Mar 24","The neighbourhood as it was today versus how you usually experience it.","Q","general"],["Mar 25","The moment you'll probably remember from today. And the one you won't.","Q","general"],["Mar 26","The interior life of the person who made your coffee today.","C","general"],["Mar 27","The story you tell about yourself leaves something out. What is it?","I","general"],["Mar 28","The version of yourself you're most afraid people can see.","I","general"],["Mar 29","Whether you're building something or maintaining something \u2014 and which you need.","I","general"],["Mar 30","The title of the documentary about your last twelve months.","C","general"],["Mar 31","Coin a word for the specific tiredness of being understood only partially.","C","general"],["Apr 01","The opening paragraph of a novel set in your current neighbourhood.","C","general"],["Apr 02","The light in the room right now \u2014 describe it precisely.","Q","general"],["Apr 03","Something you read, listened to, or watched today. One sentence on it.","Q","general"],["Apr 04","The route you walked today \u2014 what did it look like?","Q","general"],["Apr 05","Name the feeling of a good day that you can't quite describe to anyone.","C","general"],["Apr 06","Something you know about yourself that took decades to learn.","I","general"],["Apr 07","Something you overheard that stayed with you.","Q","general"],["Apr 08","Notice what your body does when you think about the year ahead.","I","general"],["Apr 09","Someone you thought about who doesn't know it.","Q","general"],["Apr 10","The last image that genuinely stopped you \u2014 in life or on screen.","Q","general"],["Apr 11","Your phone today \u2014 friend, distraction, tool, or all three?","Q","general"],["Apr 12","If your ambition were a material \u2014 stone, fabric, wire \u2014 what would it be?","C","general"],["Apr 13","Something in your immediate environment that shouldn't be there.","Q","general"],["Apr 14","What today cost you \u2014 not just money.","Q","general"],["Apr 15","Recall the last time you felt completely at ease. What was true then?","I","general"],["Apr 16","Someone you've misjudged. Someone who misjudged you.","I","general"],["Apr 17","Think of someone you've disappointed. Sit with that for a moment.","I","general"],["Apr 18","The posture you've been in for most of today.","Q","general"],["Apr 19","The task that expanded to fill more time than it deserved.","Q","general"],["Apr 20","If your current chapter were a room in a house, which room?","C","general"],["Apr 21","Portrait of yourself as you were at 15. What would that person make of today?","C","general"],["Apr 22","A single perfect sentence about this month. Take your time.","C","general"],["Apr 23","The conversation you've been rehearsing but haven't had.","I","general"],["Apr 24","Track an assumption you've been carrying without examining.","I","general"],["Apr 25","A year of your life you would redo, and what you'd change.","I","general"],["Apr 26","Describe your handwriting as a character.","C","general"],["Apr 27","What the walls of your home have witnessed this year.","C","general"],["Apr 28","Translate this year into a gesture \u2014 one physical movement.","C","general"],["Apr 29","The commute, or the absence of one. What passes for transition?","Q","general"],["Apr 30","The detail of today that no one else would notice or record.","Q","general"],["May 01","Who you become around your family \u2014 is it who you want to be?","I","general"],["May 02","The last time you were outside. What did it give you?","Q","general"],["May 03","The thing that makes you feel most alive. Are you doing it?","I","general"],["May 04","Your relationship with time \u2014 is it a friend or a pressure?","I","general"],["May 05","The kindness you find hardest to accept \u2014 where does that resistance come from?","I","general"],["May 06","A postcard to the version of yourself who is five years older.","C","general"],["May 07","The exhibition: five objects from this year, their labels.","C","general"],["May 08","Design the cover of the issue of your life this month would be.","C","general"],["May 09","The way you show up for people when no one is watching.","I","general"],["May 10","How this month is going \u2014 honest summary in a few words.","Q","general"],["May 11","The last conversation that landed \u2014 what made it different?","Q","general"],["May 12","How much water, how much caffeine, how much screen.","Q","general"],["May 13","Sleep, or the lack of it, as a mirror of your inner state.","I","general"],["May 14","Name the thing you keep circling without ever landing on.","I","general"],["May 15","The quietest kind of courage you've shown this year.","I","general"],["May 16","A fear that's gotten smaller. One that's gotten larger.","I","general"],["May 17","If you did one thing well today, what was it?","Q","general"],["May 18","How the day ended. The last conscious decision before sleep.","Q","general"],["May 19","The meal, and whether it was eaten with attention or on autopilot.","Q","general"],["May 20","The sentence your future self would underline in today's entry.","C","general"],["May 21","The menu of a restaurant that serves only things from your current life.","C","general"],["May 22","The face you wore today. Was it the right one?","Q","general"],["May 23","Three sentences from the perspective of your front door.","C","general"],["May 24","An irritation. A small grace. Which left more of a mark?","Q","general"],["May 25","The slowest moment of the day. Was it welcome?","Q","general"],["May 26","Translate the dominant feeling of this week into a colour that doesn't exist yet.","C","general"],["May 27","The last thing you touched before picking up this journal.","Q","general"],["May 28","The errand or task that turned into something else.","Q","general"],["May 29","A piece of language that caught you today \u2014 a phrase, a headline, a sign.","Q","general"],["May 30","Finish this sentence honestly: I'm still not sure I deserve \u2014","I","general"],["May 31","The version of success you've inherited versus the one you'd choose.","I","general"],["Jun 01","A belief you hold is making your life smaller. Which one?","I","general"],["Jun 02","What belonging has cost you.","I","general"],["Jun 03","The part of today that felt wasted. Is it actually?","Q","general"],["Jun 04","The thing you'll do first thing tomorrow, and whether you actually will.","Q","general"],["Jun 05","If your life had a recurring pattern, when does it repeat next?","I","general"],["Jun 06","If your attention today were a landscape, what kind of terrain?","C","general"],["Jun 07","Someone in your life who is slowly changing. Have you told them you notice?","I","general"],["Jun 08","The apology you haven't given. Or received.","I","general"],["Jun 09","How much of your life is yours, and how much has been given to you by default?","I","general"],["Jun 10","How today compared to yesterday. Better, worse, different how?","Q","general"],["Jun 11","A song that arrived in your head uninvited. Why that one?","Q","general"],["Jun 12","The colour of today \u2014 not the sky, the colour of the day itself.","Q","general"],["Jun 13","Begin: 'I used to think \u2014'","C","general"],["Jun 14","Your city's complaint about you.","C","general"],["Jun 15","The shape your life is making, seen from above.","C","general"],["Jun 16","If the city wrote you a letter today, what would it say?","C","general"],["Jun 17","Coin a term for the comfort of returning to a book you've already read.","C","general"],["Jun 18","Identify the fear underneath the smaller fear.","I","general"],["Jun 19","The thing you most want to be recognised for is not yet visible. Why?","I","general"],["Jun 20","A door you closed that you're not sure should have stayed shut.","I","general"],["Jun 21","The last line of the chapter you're currently in.","C","general"],["Jun 22","Something broken in your home you've learned to live around.","Q","general"],["Jun 23","A habit that ran on autopilot today. Did it serve you?","Q","general"],["Jun 24","The epigraph for this season. It can be something you've read, or something you make up.","C","general"],["Jun 25","A colour you've been living in lately. Not a favourite \u2014 a surrounding one.","C","general"],["Jun 26","A person who changed you without knowing it.","I","general"],["Jun 27","The contribution you want to make that you haven't started yet.","I","general"],["Jun 28","Your relationship with your own anger.","I","general"],["Jun 29","The part of your routine you'd defend if someone tried to take it.","Q","general"],["Jun 30","The quality of the crowd today \u2014 if you were in one.","Q","general"],["Jul 01","The story you'd tell about this year if you were being completely honest.","I","general"],["Jul 02","Hold the version of yourself from three years ago. What do you owe them?","I","general"],["Jul 03","Locate the gap between who you perform and who you privately are.","I","general"],["Jul 04","The first hour after waking \u2014 how does it usually go?","Q","general"],["Jul 05","The week so far \u2014 what's its dominant texture?","Q","general"],["Jul 06","Something you own that you've forgotten you own.","Q","general"],["Jul 07","The thing you were grateful for today that went unacknowledged.","Q","general"],["Jul 08","A word for the moment a plan becomes real and also frightening.","C","general"],["Jul 09","The footnote to today's main events.","C","general"],["Jul 10","A wound that's healed on the surface but not underneath.","I","general"],["Jul 11","The version of love you're still learning to receive.","I","general"],["Jul 12","Something someone said that you're still turning over.","Q","general"],["Jul 13","One object on your desk or beside you. Its history, if it has one.","Q","general"],["Jul 14","The person who occupied the background of your day without centre stage.","Q","general"],["Jul 15","The cost of your ambition, and who bears it.","I","general"],["Jul 16","Five years from now, you read this entry. What do you want it to say?","I","general"],["Jul 17","There is something you need to grieve that you haven't named yet.","I","general"],["Jul 18","Two days out. You're arriving at something. What does it feel like from here?","I","special"],["Jul 19","The last full day of this year of your life. One thing you want to say to it.","I","special"],["Jul 20","Another year of being you. Honestly \u2014 what has it cost, and what has it given?","I","special"],["Jul 21","The day after your birthday. What, if anything, has shifted?","Q","special"],["Jul 22","A small act of maintenance \u2014 of self, space, or relationship.","Q","general"],["Jul 23","If your current emotional state were a room, describe its contents.","C","general"],["Jul 24","The friend you've been meaning to call back for months.","I","general"],["Jul 25","What you'd want someone to read about you, long after you're gone.","I","general"],["Jul 26","The relationship that is costing you most \u2014 and what you're getting from it.","I","general"],["Jul 27","The toast you'd give at the end of this year, if it were a dinner.","C","general"],["Jul 28","The season in your body \u2014 what does this time of year do to you?","Q","general"],["Jul 29","Write a one-paragraph myth explaining why you ended up in this city.","C","general"],["Jul 30","The thing you most need and least ask for.","I","general"],["Jul 31","The part of your work that feels most like you.","I","general"],["Aug 01","A moment today when your body told you something your mind ignored.","Q","general"],["Aug 02","The thing on the list that keeps migrating to tomorrow.","Q","general"],["Aug 03","A promise made or broken \u2014 to yourself or someone else.","Q","general"],["Aug 04","The work you do when no one assigns it to you.","I","general"],["Aug 05","A decision you made quickly. One you've been making slowly for weeks.","Q","general"],["Aug 06","The best exchange you had today, even if it lasted thirty seconds.","Q","general"],["Aug 07","A question someone asked you today that you didn't answer fully.","Q","general"],["Aug 08","How are you different from who you were at the start of this year?","I","general"],["Aug 09","Where your patience runs out, and why.","I","general"],["Aug 10","Pinpoint the moment this week when you were most yourself.","I","general"],["Aug 11","Some things you've survived have also diminished you. Name one.","I","general"],["Aug 12","Something that arrived unexpectedly today \u2014 information, feeling, person.","Q","general"],["Aug 13","The city today \u2014 what mood was it in?","Q","general"],["Aug 14","How much of today was chosen versus how much just happened to you?","Q","general"],["Aug 15","The ambition you've stopped telling people about.","I","general"],["Aug 16","The version of home you carry inside you.","I","general"],["Aug 17","You've been waiting for permission. From whom, and for what?","I","general"],["Aug 18","Write the weather forecast for your emotional life this week.","C","general"],["Aug 19","What forgiveness looks like in your life, right now.","I","general"],["Aug 20","A face that passed yours today. Did you make eye contact?","Q","general"],["Aug 21","The window view, if you have one. Or what you'd put there if you could.","Q","general"],["Aug 22","A still life of your current desk, interpreted.","C","general"],["Aug 23","A day in the life of an object you interact with constantly.","C","general"],["Aug 24","The last purchase. Was it wanted or needed?","Q","general"],["Aug 25","When you felt most focused today. What allowed it?","Q","general"],["Aug 26","A stranger's face you keep thinking about. Why that one?","Q","general"],["Aug 27","Draw a map of your attention over the past week \u2014 in words, not lines.","C","general"],["Aug 28","The image that best captures where you are in life right now.","C","general"],["Aug 29","A curated playlist for the mood you've been in most this week.","C","general"],["Aug 30","You are more afraid of success than you usually admit. In what area?","I","general"],["Aug 31","The thing this year has taken from you that you're not yet ready to name.","I","general"],["Sep 01","If today had a typeface, what would it be and why?","C","general"],["Sep 02","The person you were becoming until something interrupted it.","I","general"],["Sep 03","Something has shifted in you this year. You haven't told anyone.","I","general"],["Sep 04","A person who no longer occupies your life. Where did they go?","I","general"],["Sep 05","The temperature, the smell, the surface under your hands.","Q","general"],["Sep 06","The physical habit that most reveals your emotional life.","I","general"],["Sep 07","Sit with the discomfort of something unresolved. Don't fix it. Just describe it.","I","general"],["Sep 08","The person who frustrates you most teaches you something. What?","I","general"],["Sep 09","The version of your life that branched off at a decision you made three years ago.","C","general"],["Sep 10","Energy levels today, and the hour they turned.","Q","general"],["Sep 11","The object that moved most through your hands today.","Q","general"],["Sep 12","Where tension lives in your body right now, and what it's been asked to hold.","I","general"],["Sep 13","Trace the thread between where you are and where you thought you'd be.","I","general"],["Sep 14","Honesty: are you happy?","I","general"],["Sep 15","The expectation you inherited that no longer fits.","I","general"],["Sep 16","A scene set in the most forgettable moment of the past week.","C","general"],["Sep 17","A two-sentence portrait of someone you saw today.","C","general"],["Sep 18","The rules of a game that describes your current work life.","C","general"],["Sep 19","Your life as described by someone who loves you but doesn't fully understand you.","C","general"],["Sep 20","Something about Toronto you noticed that you've never noticed before.","Q","general"],["Sep 21","Sleep: when, how long, what quality, what residue.","Q","general"],["Sep 22","A word for the particular grief of a friendship that fades without ending.","C","general"],["Sep 23","The texture of this year \u2014 is it rough, smooth, porous, dense?","C","general"],["Sep 24","The floor plan of your current mental state.","C","general"],["Sep 25","The hour you lost. The hour you found.","Q","general"],["Sep 26","The text you didn't reply to and why.","Q","general"],["Sep 27","A gesture of care you offered or received, however small.","Q","general"],["Sep 28","The last time your body surprised you \u2014 with capability or collapse.","I","general"],["Sep 29","Name the emotion of recognising your younger self in a stranger.","C","general"],["Sep 30","An instruction manual for spending a day with you.","C","general"],["Oct 01","A classified ad for something you want to release from your life.","C","general"],["Oct 02","What your stubbornness is protecting.","I","general"],["Oct 03","A choice you made this year that still echoes.","I","general"],["Oct 04","The last time you cried, or wanted to.","I","general"],["Oct 05","How the day opened, before anything was required of you.","Q","general"],["Oct 06","The item you kept meaning to put away and didn't.","Q","general"],["Oct 07","Your handwriting right now \u2014 what does it reveal?","Q","general"],["Oct 08","Invent a name for the feeling of a city just before a storm.","C","general"],["Oct 09","If you could design a monument to something you've survived, what would it look like?","C","general"],["Oct 10","A field note from today, as if you were observing yourself from outside.","C","general"],["Oct 11","Two sounds you can hear. One you usually don't notice.","Q","general"],["Oct 12","The version of today that exists in someone else's diary.","C","general"],["Oct 13","The neighbourhood as it was today versus how you usually experience it.","Q","general"],["Oct 14","The moment you'll probably remember from today. And the one you won't.","Q","general"],["Oct 15","The light in the room right now \u2014 describe it precisely.","Q","general"],["Oct 16","How you love people. Is it how you want to?","I","general"],["Oct 17","Name three things you've quietly given up on. Which one still pulls?","I","general"],["Oct 18","If someone painted your day, what would they choose to emphasise?","C","general"],["Oct 19","If your life were a piece of music right now, name the key it's in.","C","general"],["Oct 20","Open with: 'By the time you read this \u2014'","C","general"],["Oct 21","The dedication page of a book you'll never write but should.","C","general"],["Oct 22","Something you read, listened to, or watched today. One sentence on it.","Q","general"],["Oct 23","The route you walked today \u2014 what did it look like?","Q","general"],["Oct 24","Something you overheard that stayed with you.","Q","general"],["Oct 25","Imagine the version of this city in fifty years. Is it recognisable?","C","general"],["Oct 26","Something ordinary you passed today that contained something enormous.","C","general"],["Oct 27","If this year were a form of transportation, which one and why?","C","general"],["Oct 28","Write the stage directions for the most ordinary scene of your day.","C","general"],["Oct 29","You are allowed to change your mind. What would you change first?","I","general"],["Oct 30","A year from now, what do you hope to have stopped doing?","I","general"],["Oct 31","The thing you're pretending is fine.","I","general"],["Nov 01","November. The year is rounding its final corner. How are you?","Q","november"],["Nov 02","The texture of the last ten months \u2014 rough, smooth, surprising?","Q","november"],["Nov 03","Something this year gave you that you didn't ask for.","I","november"],["Nov 04","Something this year took that you didn't expect to lose.","I","november"],["Nov 05","The relationship that changed most in the last ten months.","I","november"],["Nov 06","How your relationship with your work has shifted this year.","I","november"],["Nov 07","A habit that formed this year. Is it one you'd choose?","Q","november"],["Nov 08","The quietest kind of growth that happened this year.","I","november"],["Nov 09","Honestly: where did your energy go this year? Was it well spent?","I","november"],["Nov 10","The version of next year you'd be proud to inhabit \u2014 what does it look like?","I","november"],["Nov 11","A fear that's been running in the background all year. Name it plainly.","I","november"],["Nov 12","The work you want to be doing versus the work you're actually doing.","I","november"],["Nov 13","Three things to do less of. Three things to do more of. No hedging.","I","november"],["Nov 14","The version of yourself you kept trying to access this year \u2014 what got in the way?","I","november"],["Nov 15","Not goals. Intentions. Name three for the year ahead.","I","november"],["Nov 16","The person next year needs you to become. Is that person close?","I","november"],["Nov 17","A commitment you made to yourself this year that you broke. Why?","I","november"],["Nov 18","The single change that would most improve your daily life. Why haven't you made it?","I","november"],["Nov 19","Something you're pretending is sustainable that isn't.","I","november"],["Nov 20","The thing you'd most regret not doing in the coming year.","I","november"],["Nov 21","If next year had one word, what would you want it to be?","I","november"],["Nov 22","Something you want to learn \u2014 not for anyone else, just for you.","I","november"],["Nov 23","The parts of your life that deserve more of your attention than they're getting.","I","november"],["Nov 24","A structure or rhythm your days are missing.","I","november"],["Nov 25","What next year needs from you that this year couldn't get.","I","november"],["Nov 26","The version of your life you'd be living if you were a little braver.","I","november"],["Nov 27","Write a letter: 'Dear January \u2014'","C","november"],["Nov 28","Three things you know are true about next year already.","I","november"],["Nov 29","The first line of the chapter you want next year to be.","C","november"],["Nov 30","Say something to this year before it closes.","I","november"],["Dec 01","Someone you thought about who doesn't know it.","Q","general"],["Dec 02","The last image that genuinely stopped you \u2014 in life or on screen.","Q","general"],["Dec 03","Your phone today \u2014 friend, distraction, tool, or all three?","Q","general"],["Dec 04","The gap between your values and your behaviour this week.","I","general"],["Dec 05","Locate where you are \u2014 not geographically.","I","general"],["Dec 06","Where you feel most like a stranger, and whether that's getting better.","I","general"],["Dec 07","A letter to an object that has outlasted its usefulness in your life.","C","general"],["Dec 08","Something in your immediate environment that shouldn't be there.","Q","general"],["Dec 09","What today cost you \u2014 not just money.","Q","general"],["Dec 10","The posture you've been in for most of today.","Q","general"],["Dec 11","The interior life of the person who made your coffee today.","C","general"],["Dec 12","The title of the documentary about your last twelve months.","C","general"],["Dec 13","Coin a word for the specific tiredness of being understood only partially.","C","general"],["Dec 14","The opening paragraph of a novel set in your current neighbourhood.","C","general"],["Dec 15","There's a version of your life you haven't lived. Describe its outlines.","I","general"],["Dec 16","The relationship that costs you the most energy \u2014 is it worth it?","I","general"],["Dec 17","The task that expanded to fill more time than it deserved.","Q","general"],["Dec 18","The commute, or the absence of one. What passes for transition?","Q","general"],["Dec 19","The detail of today that no one else would notice or record.","Q","general"],["Dec 20","You're better at something than you admit. Say it plainly.","I","general"],["Dec 21","The last time you were outside. What did it give you?","Q","general"],["Dec 22","How this month is going \u2014 honest summary in a few words.","Q","general"],["Dec 23","The last conversation that landed \u2014 what made it different?","Q","general"],["Dec 24","An hour of stillness tonight, if you can find one. What do you notice?","Q","special"],["Dec 25","The thing you're most grateful for this year that you haven't said aloud to anyone.","I","special"],["Dec 26","What remains after the day passes. What you're carrying forward.","Q","special"],["Dec 27","Name the feeling of a good day that you can't quite describe to anyone.","C","general"],["Dec 28","This year asked something specific of you. Did you give it?","I","special"],["Dec 29","Something true about you in January that is no longer true in December.","I","special"],["Dec 30","What you're leaving in this year. What you're taking.","I","special"],["Dec 31","Last page. The year is closing. Say what needs saying.","I","special"]];
+// [dateLabel, prompt, type(I/Q/C), source]
+
+const YEARS = [2026,2027,2028,2029,2030];
+const TODAY = new Date(); TODAY.setHours(0,0,0,0);
+const WDAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONTHS = ['January','February','March','April','May','June',
+                'July','August','September','October','November','December'];
+const CAT_LBL = {I:'Introspective', Q:'Quotidian', C:'Creative'};
+
+let idx = 0, onCover = true;
+
+function startIdx() {
+  const s = new Date(2026,0,1);
+  const d = Math.round((TODAY - s)/86400000);
+  // If before 2026 start, open at 0; if after 2030 end, open at 364
+  return Math.max(0, Math.min(364, d));
+}
+
+// Storage
+function skey(yr, i) { return `fyj26_${yr}_${String(i).padStart(3,'0')}`; }
+function save(yr, i, t) { localStorage.setItem(skey(yr,i), t); }
+function load(yr, i) { return localStorage.getItem(skey(yr,i)) || ''; }
+function hasEntry(yr, i) { const v = load(yr,i); return v && v.trim().length > 0; }
+
+function dateFromIdx(i) {
+  const d = new Date(2026,0,1); d.setDate(d.getDate()+i); return d;
+}
+
+function activeYear() { return TODAY.getFullYear(); }
+
+function render(dir) {
+  const e = CAL[idx];
+  const d = dateFromIdx(idx);
+  const curYr = activeYear();
+
+  document.getElementById('hdr-date').textContent =
+    d.toLocaleDateString('en-US',{month:'short',day:'2-digit',year:'numeric'}).toUpperCase();
+  document.getElementById('d-num').textContent = d.getDate();
+  document.getElementById('d-mon').textContent =
+    d.toLocaleDateString('en-US',{month:'short'}).toUpperCase();
+  document.getElementById('d-wday').textContent = WDAYS[d.getDay()].toUpperCase();
+  document.getElementById('d-dnum').textContent = `Day ${idx+1} of 365`;
+  document.getElementById('pg-num').textContent = `${idx+1} / 365`;
+
+  const isSpecial = e[3]==='special' || e[3]==='november';
+  const typeCls = isSpecial ? 'tS' : `t${e[2]}`;
+  const typeLabel = isSpecial
+    ? (e[3]==='november' ? 'Planning' : 'Special')
+    : CAT_LBL[e[2]];
+
+  const ps = document.getElementById('prompt-sec');
+  ps.className = `prompt-sec ${typeCls}`;
+  const ptag = document.getElementById('ptag');
+  ptag.querySelector('.ptag-lbl').textContent = typeLabel;
+  document.getElementById('prompt-txt').textContent = e[1];
+
+  const sec = document.getElementById('entries');
+  sec.innerHTML = '';
+
+  YEARS.forEach(yr => {
+    const isPast   = yr < curYr;
+    const isActive = yr === curYr;
+    const isFuture = yr > curYr;
+    const sc = isPast ? 'ypast' : isActive ? 'yactive' : 'yfuture';
+
+    const row = document.createElement('div');
+    row.className = `yr-row ${sc}`;
+
+    const lc = document.createElement('div');
+    lc.className = 'yr-label';
+    lc.innerHTML = `<div class="yr-dot"></div><div class="yr-num">${yr}</div>`;
+
+    const cc = document.createElement('div');
+    cc.className = 'yr-content';
+
+    if (isPast) {
+      const t = load(yr, idx);
+      cc.innerHTML = t
+        ? `<div class="past-txt">${esc(t)}</div>`
+        : `<div class="no-entry">no entry</div>`;
+    } else if (isActive) {
+      const ta = document.createElement('textarea');
+      ta.className = 'active-ta'; ta.id = 'active-ta';
+      ta.rows = 2; ta.placeholder = 'Write here…';
+      ta.value = load(yr, idx);
+      ta.addEventListener('input', () => {
+        ta.style.height = 'auto';
+        ta.style.height = ta.scrollHeight + 'px';
+      });
+      cc.appendChild(ta);
+      setTimeout(() => { ta.style.height='auto'; ta.style.height=ta.scrollHeight+'px'; }, 10);
+    } else {
+      cc.innerHTML = `<div class="future-line"></div>`;
+    }
+
+    row.appendChild(lc); row.appendChild(cc); sec.appendChild(row);
+  });
+
+  document.getElementById('btn-prev').disabled = idx === 0;
+  document.getElementById('btn-next').disabled = idx === 364;
+  document.getElementById('prog-fill').style.width = ((idx/364)*100).toFixed(1)+'%';
+
+  if (dir) {
+    const inner = document.querySelector('#journal-page .page-inner');
+    const cls = dir===1 ? 'tfwd' : 'tbck';
+    inner.classList.remove('tfwd','tbck');
+    void inner.offsetWidth;
+    inner.classList.add(cls);
+    setTimeout(()=>inner.classList.remove(cls), 400);
+  }
+  document.getElementById('save-st').classList.remove('show');
+}
+
+function esc(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+          .replace(/"/g,'&quot;').replace(/\n/g,'<br>');
+}
+
+function navigate(dir) {
+  const ta = document.getElementById('active-ta');
+  if (ta) save(activeYear(), idx, ta.value);
+  idx = Math.max(0, Math.min(364, idx+dir));
+  render(dir);
+}
+
+function goToday() {
+  const prev = idx; idx = startIdx();
+  closeModal();
+  render(idx > prev ? 1 : idx < prev ? -1 : 0);
+}
+
+function goToDay(i) {
+  const prev = idx; idx = i; closeModal();
+  render(i > prev ? 1 : -1);
+}
+
+function saveEntry() {
+  const ta = document.getElementById('active-ta');
+  if (!ta) return;
+  save(activeYear(), idx, ta.value);
+  const s = document.getElementById('save-st');
+  s.textContent = 'saved ✓'; s.classList.add('show');
+  setTimeout(()=>s.classList.remove('show'), 2200);
+}
+
+function openJournal() {
+  onCover = false; idx = startIdx();
+  document.getElementById('cover').style.display = 'none';
+  document.getElementById('journal-page').style.display = 'block';
+  document.getElementById('ctrls').style.display = 'flex';
+  document.getElementById('prog-wrap').style.display = 'block';
+  render(1);
+}
+
+function closeCover() {
+  onCover = true;
+  document.getElementById('cover').style.display = 'flex';
+  document.getElementById('journal-page').style.display = 'none';
+  document.getElementById('ctrls').style.display = 'none';
+  document.getElementById('prog-wrap').style.display = 'none';
+}
+
+function openModal() { buildModal(); document.getElementById('modal').classList.add('open'); }
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target===document.getElementById('modal')) closeModal();
+});
+
+function buildModal() {
+  const grid = document.getElementById('month-grid');
+  grid.innerHTML = '';
+  const curYr = activeYear();
+  const todayI = startIdx();
+
+  for (let m=0; m<12; m++) {
+    const item = document.createElement('div');
+    item.className = 'month-item';
+    const daysInM = new Date(2026, m+1, 0).getDate();
+    let dots = '';
+    for (let day=1; day<=daysInM; day++) {
+      const dd = new Date(2026,m,day);
+      const i = Math.round((dd - new Date(2026,0,1))/86400000);
+      if (i<0||i>364) continue;
+      const entry = CAL[i];
+      const isTdy = i===todayI;
+      const hasE  = hasEntry(curYr, i);
+      const isSp  = entry[3]==='special'||entry[3]==='november';
+      let cls = 'mday';
+      if (isTdy) cls+=' is-today';
+      else if (isSp) cls+=' is-special';
+      else if (hasE) cls+=' has-entry';
+      dots += `<div class="${cls}" title="${entry[0]}" onclick="goToDay(${i})">${day}</div>`;
+    }
+    item.innerHTML = `<div class="month-nm">${MONTHS[m].substring(0,3)}</div>
+                      <div class="month-days">${dots}</div>`;
+    grid.appendChild(item);
+  }
+}
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if (onCover) return;
+  if ((e.metaKey||e.ctrlKey) && e.key==='s') { e.preventDefault(); saveEntry(); }
+  if (!e.target.matches('textarea')) {
+    if (e.key==='ArrowRight') navigate(1);
+    if (e.key==='ArrowLeft')  navigate(-1);
+  }
+});
+
+// Swipe
+let tx=0;
+document.addEventListener('touchstart', e=>{ tx=e.touches[0].clientX; });
+document.addEventListener('touchend', e=>{
+  if (onCover) return;
+  const dx=e.changedTouches[0].clientX-tx;
+  if (Math.abs(dx)>50) navigate(dx<0?1:-1);
+});
+</script>
+
+<script>
+// ── PWA MANIFEST (injected inline) ───────────────────────
+const manifestData = {
+  name: "Five Year Journal",
+  short_name: "Journal",
+  description: "A five year journal — Nancy Alice",
+  start_url: "./",
+  display: "standalone",
+  background_color: "#0d0b08",
+  theme_color: "#1a1108",
+  orientation: "portrait",
+  icons: [
+    {
+      src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='24' fill='%231a1108'/%3E%3Crect x='28' y='24' width='136' height='144' rx='4' fill='%232d1f0a'/%3E%3Crect x='36' y='32' width='120' height='128' rx='2' fill='%23f4ede0' opacity='.08'/%3E%3Ctext x='96' y='108' text-anchor='middle' font-family='serif' font-size='52' fill='%23c9a84c' opacity='.9'%3E5%3C/text%3E%3C/svg%3E",
+      sizes: "192x192",
+      type: "image/svg+xml",
+      purpose: "any maskable"
+    }
+  ]
+};
+const blob = new Blob([JSON.stringify(manifestData)], {type:'application/json'});
+const mUrl = URL.createObjectURL(blob);
+const mLink = document.createElement('link');
+mLink.rel = 'manifest'; mLink.href = mUrl;
+document.head.appendChild(mLink);
+
+// ── SERVICE WORKER + NOTIFICATIONS ───────────────────────
+const SW_CODE = `
+const CACHE = 'fyj-v1';
+self.addEventListener('install', e => self.skipWaiting());
+self.addEventListener('activate', e => clients.claim());
+
+// Daily notification alarm
+self.addEventListener('message', e => {
+  if (e.data && e.data.type === 'SCHEDULE_NOTIFICATION') {
+    scheduleDaily(e.data.prompt, e.data.date);
+  }
+});
+
+function scheduleDaily(prompt, dateLabel) {
+  // Store in cache for alarm
+  caches.open(CACHE).then(c => {
+    c.put('__next_notif__',
+      new Response(JSON.stringify({prompt, dateLabel, scheduled: Date.now()})));
+  });
+}
+
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  e.waitUntil(clients.matchAll({type:'window'}).then(cls => {
+    if (cls.length) return cls[0].focus();
+    return clients.openWindow('./');
+  }));
+});
+`;
+
+// Register service worker from blob
+const swBlob = new Blob([SW_CODE], {type:'application/javascript'});
+const swUrl  = URL.createObjectURL(swBlob);
+
+let swReg = null;
+
+async function initPWA() {
+  if (!('serviceWorker' in navigator)) return;
+  try {
+    swReg = await navigator.serviceWorker.register(swUrl, {scope: './'});
+    console.log('[FYJ] SW registered');
+    scheduleNotification();
+  } catch(e) {
+    console.log('[FYJ] SW error:', e);
+  }
+}
+
+async function requestNotificationPermission() {
+  if (!('Notification' in window)) return false;
+  if (Notification.permission === 'granted') return true;
+  if (Notification.permission === 'denied') return false;
+  const result = await Notification.requestPermission();
+  return result === 'granted';
+}
+
+// ── DAILY NOTIFICATION SCHEDULER ─────────────────────────
+// Target: 6:30 AM every day
+const NOTIF_HOUR   = 6;
+const NOTIF_MINUTE = 30;
+
+function msUntilNext630() {
+  const now  = new Date();
+  const next = new Date();
+  next.setHours(NOTIF_HOUR, NOTIF_MINUTE, 0, 0);
+  if (next <= now) next.setDate(next.getDate() + 1); // already passed today
+  return next - now;
+}
+
+function getTodayPrompt() {
+  if (typeof CAL === 'undefined') return null;
+  const start = new Date(2026, 0, 1);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const idx   = Math.round((today - start) / 86400000);
+  if (idx < 0 || idx > 364) return null;
+  return { prompt: CAL[idx][1], date: CAL[idx][0] };
+}
+
+let notifTimer = null;
+
+async function scheduleNotification() {
+  const granted = await requestNotificationPermission();
+  if (!granted) return;
+
+  const fireAt = msUntilNext630();
+  console.log('[FYJ] Next notification in', Math.round(fireAt/60000), 'minutes');
+
+  clearTimeout(notifTimer);
+  notifTimer = setTimeout(() => {
+    fireNotification();
+    // Re-schedule for tomorrow
+    notifTimer = setInterval(fireNotification, 24 * 60 * 60 * 1000);
+  }, fireAt);
+}
+
+function fireNotification() {
+  const data = getTodayPrompt();
+  if (!data) return;
+  if (Notification.permission !== 'granted') return;
+
+  const shortPrompt = data.prompt.length > 80
+    ? data.prompt.substring(0, 77) + '…'
+    : data.prompt;
+
+  if (swReg && swReg.active) {
+    swReg.showNotification('Five Year Journal · ' + data.date, {
+      body: shortPrompt,
+      icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Crect width='96' height='96' rx='12' fill='%231a1108'/%3E%3Ctext x='48' y='64' text-anchor='middle' font-family='serif' font-size='48' fill='%23c9a84c'%3E5%3C/text%3E%3C/svg%3E",
+      badge: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Crect width='96' height='96' rx='12' fill='%231a1108'/%3E%3Ctext x='48' y='64' text-anchor='middle' font-family='serif' font-size='48' fill='%23c9a84c'%3E5%3C/text%3E%3C/svg%3E",
+      vibrate: [200, 100, 200],
+      tag: 'fyj-daily',
+      renotify: true,
+      requireInteraction: false,
+      silent: false
+    });
+  } else {
+    new Notification('Five Year Journal · ' + data.date, {
+      body: shortPrompt,
+      tag: 'fyj-daily'
+    });
+  }
+}
+
+// ── INSTALL PROMPT ────────────────────────────────────────
+let deferredInstall = null;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredInstall = e;
+  // Show install banner after 3 seconds if not already installed
+  setTimeout(showInstallBanner, 3000);
+});
+
+function showInstallBanner() {
+  if (!deferredInstall) return;
+  if (window.matchMedia('(display-mode: standalone)').matches) return;
+
+  const banner = document.createElement('div');
+  banner.id = 'install-banner';
+  banner.style.cssText = `
+    position:fixed;bottom:80px;left:50%;transform:translateX(-50%);
+    background:#2d1f0a;border:1px solid rgba(201,168,76,.3);
+    border-radius:4px;padding:.8rem 1.2rem;z-index:200;
+    display:flex;align-items:center;gap:1rem;
+    box-shadow:0 8px 32px rgba(0,0,0,.6);
+    font-family:'DM Mono',monospace;
+  `;
+  banner.innerHTML = `
+    <span style="font-size:.6rem;letter-spacing:.12em;color:rgba(201,168,76,.8);">
+      Add to home screen for daily prompts
+    </span>
+    <button onclick="installApp()" style="
+      background:var(--accent,#8b3a1e);color:#f4ede0;border:none;
+      padding:.35rem .8rem;font-family:'DM Mono',monospace;
+      font-size:.58rem;letter-spacing:.14em;cursor:pointer;border-radius:2px;">
+      Install
+    </button>
+    <button onclick="document.getElementById('install-banner').remove()" style="
+      background:none;border:none;color:rgba(201,168,76,.4);
+      font-size:.9rem;cursor:pointer;padding:0 .2rem;">✕</button>
+  `;
+  document.body.appendChild(banner);
+}
+
+async function installApp() {
+  if (!deferredInstall) return;
+  deferredInstall.prompt();
+  const {outcome} = await deferredInstall.userChoice;
+  deferredInstall = null;
+  const banner = document.getElementById('install-banner');
+  if (banner) banner.remove();
+  if (outcome === 'accepted') {
+    setTimeout(scheduleNotification, 2000);
+  }
+}
+
+// ── INIT ─────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  initPWA();
+  // If already standalone (installed), schedule immediately
+  if (window.matchMedia('(display-mode: standalone)').matches) {
+    scheduleNotification();
+  }
+});
+</script>
+
+
+<script>
+// ── CONFIG ───────────────────────────────────────────────
+const CLIENT_ID  = '468012749285-2tf51mverlk5tvrgcghs93rupsed38go.apps.googleusercontent.com';
+const SHEET_ID   = '1waNiy1rpEyUfPwpMVmjAOZ2jQD7e7NWiOzLP3stLeDU';
+const SCOPES     = 'https://www.googleapis.com/auth/spreadsheets';
+const SHEET_NAME = 'Journal';
+const YEAR_COL   = {2026:'E',2027:'F',2028:'G',2029:'H',2030:'I'};
+
+let tokenClient, accessToken = null, tokenExpiry = 0;
+let pendingAction = null;
+
+// ── INIT ─────────────────────────────────────────────────
+function initSheets() {
+  if (typeof google === 'undefined') {
+    setTimeout(initSheets, 600); return;
+  }
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: SCOPES,
+    prompt: 'select_account',
+    callback: onToken,
+  });
+  setTimeout(showConnectBar, 2500);
+}
+
+function onToken(resp) {
+  if (resp.error) { console.error('[FYJ]', resp); return; }
+  accessToken = resp.access_token;
+  tokenExpiry  = Date.now() + (resp.expires_in - 60) * 1000;
+  hideConnectBar();
+  showConnectedBadge();
+  if (pendingAction) { pendingAction(); pendingAction = null; }
+  loadPageFromSheet(idx);
+}
+
+function ensureToken(fn) {
+  if (accessToken && Date.now() < tokenExpiry) { fn(); return; }
+  pendingAction = fn;
+  tokenClient.requestAccessToken();
+}
+
+// ── SHEET HELPERS ─────────────────────────────────────────
+function rowCol(dayIndex, year) {
+  return `${SHEET_NAME}!${YEAR_COL[year]}${dayIndex + 2}`;
+}
+
+async function sheetRead(range) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}`;
+  const r = await fetch(url, {headers: {'Authorization': `Bearer ${accessToken}`}});
+  if (!r.ok) return null;
+  const d = await r.json();
+  return (d.values && d.values[0] && d.values[0][0]) || '';
+}
+
+async function sheetReadRow(dayIndex) {
+  const range = `${SHEET_NAME}!E${dayIndex+2}:I${dayIndex+2}`;
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}`;
+  const r = await fetch(url, {headers: {'Authorization': `Bearer ${accessToken}`}});
+  if (!r.ok) return {};
+  const d = await r.json();
+  const vals = (d.values && d.values[0]) || [];
+  const out = {};
+  [2026,2027,2028,2029,2030].forEach((yr,i) => out[yr] = vals[i]||'');
+  return out;
+}
+
+async function sheetWrite(dayIndex, year, text) {
+  const range = rowCol(dayIndex, year);
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}?valueInputOption=RAW`;
+  const r = await fetch(url, {
+    method: 'PUT',
+    headers: {'Authorization':`Bearer ${accessToken}`,'Content-Type':'application/json'},
+    body: JSON.stringify({range, majorDimension:'ROWS', values:[[text]]}),
+  });
+  return r.ok;
+}
+
+// ── LOAD ENTRIES FROM SHEET ───────────────────────────────
+async function loadPageFromSheet(dayIndex) {
+  if (!accessToken) return;
+  try {
+    const entries = await sheetReadRow(dayIndex);
+    const yr = activeYear();
+    // Cache all years locally
+    [2026,2027,2028,2029,2030].forEach(y => {
+      if (entries[y]) save(y, dayIndex, entries[y]);
+    });
+    // Update active textarea
+    const ta = document.getElementById('active-ta');
+    if (ta && entries[yr]) {
+      ta.value = entries[yr];
+      ta.style.height = 'auto';
+      ta.style.height = ta.scrollHeight + 'px';
+    }
+    // Update past entries in DOM
+    document.querySelectorAll('.past-txt').forEach(el => {
+      // Re-render handled by next render call
+    });
+    // Re-render to show loaded past entries
+    render(0);
+  } catch(e) { console.error('[FYJ] Load error', e); }
+}
+
+// ── SAVE ─────────────────────────────────────────────────
+async function saveEntry() {
+  const ta = document.getElementById('active-ta');
+  if (!ta) return;
+  const text = ta.value;
+  const yr   = activeYear();
+
+  // Always save locally first
+  save(yr, idx, text);
+
+  const s = document.getElementById('save-st');
+  s.textContent = 'saving…'; s.classList.add('show');
+
+  if (!accessToken || Date.now() >= tokenExpiry) {
+    // Not connected — save locally, prompt connect
+    s.textContent = 'saved locally ✓';
+    setTimeout(() => s.classList.remove('show'), 2500);
+    showConnectBar();
+    return;
+  }
+
+  try {
+    const ok = await sheetWrite(idx, yr, text);
+    s.textContent = ok ? 'saved to sheet ✓' : 'saved locally ✓';
+    setTimeout(() => s.classList.remove('show'), 2500);
+  } catch(e) {
+    s.textContent = 'saved locally ✓';
+    setTimeout(() => s.classList.remove('show'), 2500);
+  }
+}
+
+// ── UI HELPERS ────────────────────────────────────────────
+function showConnectBar() {
+  if (document.getElementById('connect-bar')) return;
+  if (window.matchMedia('(display-mode: standalone)').matches || true) {
+    const bar = document.createElement('div');
+    bar.id = 'connect-bar';
+    bar.style.cssText = `
+      position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+      width:500px;max-width:100vw;
+      background:#2d1f0a;border-top:1px solid rgba(201,168,76,.25);
+      padding:.65rem 1.5rem;z-index:50;
+      display:flex;align-items:center;justify-content:space-between;
+      font-family:'DM Mono',monospace;
+    `;
+    bar.innerHTML = `
+      <span style="font-size:.58rem;letter-spacing:.1em;color:rgba(201,168,76,.7);">
+        Sync entries to Google Sheets
+      </span>
+      <button onclick="connectSheets()" style="
+        background:#8b3a1e;color:#f4ede0;border:none;
+        padding:.38rem .9rem;font-family:'DM Mono',monospace;
+        font-size:.56rem;letter-spacing:.14em;cursor:pointer;border-radius:1px;">
+        Connect
+      </button>
+    `;
+    document.body.appendChild(bar);
+  }
+}
+
+function hideConnectBar() {
+  const b = document.getElementById('connect-bar');
+  if (b) b.remove();
+}
+
+function showConnectedBadge() {
+  const existing = document.getElementById('connected-badge');
+  if (existing) return;
+  const badge = document.createElement('div');
+  badge.id = 'connected-badge';
+  badge.style.cssText = `
+    position:fixed;top:12px;right:12px;
+    background:rgba(90,122,94,.9);
+    color:#f4ede0;font-family:'DM Mono',monospace;
+    font-size:.5rem;letter-spacing:.12em;
+    padding:.3rem .7rem;border-radius:2px;z-index:50;
+    animation:fadeUp .3s ease both;
+  `;
+  badge.textContent = 'connected to sheets';
+  document.body.appendChild(badge);
+  setTimeout(() => badge.remove(), 3000);
+}
+
+function connectSheets() {
+  hideConnectBar();
+  tokenClient.requestAccessToken();
+}
+
+window.addEventListener('load', initSheets);
+</script>
+
+</body>
+</html>
