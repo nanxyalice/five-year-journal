@@ -1,16 +1,25 @@
 # Five Year Journal
 
-A personal five year journal — 365 prompts across 2026–2030.
+A personal five year journal — 365 prompts across 2026–2030. Password protected. Entries sync to Google Sheets.
 
-Password protected. Connect to Google Sheets for sync.
-
-## Screens
+---
 
 ### Cover
-![Cover](Five-Year-Journal_ (1).png)
 
-### Journal
-![Journal](Five-Year-Journal_ (2).png)
+![Cover](Five-Year-Journal_%20(1).png)
 
-### Browse
-![Browse](Five-Year-Journal_ (3).png)
+---
+
+### Journal Page
+
+![Journal](Five-Year-Journal_%20(2).png)
+
+---
+
+### Browse by Month
+
+![Browse](Five-Year-Journal_%20(3).png)
+
+---
+
+Built as a single HTML file. Opens as an installable web app on Android. Daily prompt notification at 6:30am.
